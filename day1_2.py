@@ -1,7 +1,5 @@
-import re
-from io import StringIO
 
-filename = "day1_2b.txt"
+filename = "day1_2.txt"
 
 nums = [
     'zero',
@@ -40,9 +38,12 @@ def find_all_nums(arg):
     for el in arg:
         str = str + el
         if check_if_arr_contain_num(str) != '':
-            tmp.append(check_if_arr_contain_num(str))
-            str = ''
-
+            str = check_if_arr_contain_num(str)
+            tmp.append(str)
+            if str.isdigit():
+                str = ''
+            else: str = str[-1]
+    print(tmp)
     retrieved_nums = []
     for el in tmp:
         for n in nums:
@@ -55,13 +56,14 @@ with open(filename) as f:
     content = f.read().split()
 
 result = 0
-
+count = 1
 for line in content:
     nums_arr = find_all_nums(line)
     for el in nums_arr:
         if el.isalpha():
             nums_arr[nums_arr.index(el)] = nums[nums.index(el) + 1]
     p = int(nums_arr[0] + '' + nums_arr[len(nums_arr) - 1])
-    print(p)
+    print('Printing count: ',count , p)
     result = result + p
+    count = count + 1
 print(result)
