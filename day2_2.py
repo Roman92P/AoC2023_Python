@@ -6,8 +6,6 @@ with open(filename) as f:
     content = f.read().splitlines()
 
 
-
-
 def check_game(game_input):
     red_max = 0
     green_max = 0
