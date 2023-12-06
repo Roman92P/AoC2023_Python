@@ -1,15 +1,14 @@
-
 import re
 
-filename = "day4_1.txt"
+filename = "day4_2.txt"
 
-# Process all of the original and copied scratchcards until no more scratchcards are won.
-# Including the original set of scratchcards, how many total scratchcards do you end up with?
 
 with open(filename) as f:
     content = f.read().splitlines()
 
 process_card_ids = []
+
+content_copy = content.copy()
 
 
 def process_card(card):
@@ -28,11 +27,21 @@ def process_card(card):
 
     for idx, n in enumerate(won):
         won_cards_ids.append(int(idx + 1) + int(''.join(current_card_id)))
+
+    for k in won_cards_ids:
+        process_card(content[k-1])
     return won_cards_ids
 
 
+copy_card_id = []
 for card in content:
-    copy_card_id = process_card(card)
-    print(copy_card_id)
+    c_l = re.split(': | \\|', card)
+    cc_id = re.findall(r'\d', c_l[0])
+    r = process_card(card)
+    copy_card_id.append(r)
+    print('Id card: ', ''.join(cc_id), ': ', r)
 
-print(process_card_ids)
+
+print(len(process_card_ids))
+
+
