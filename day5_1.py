@@ -1,6 +1,4 @@
-import re
-
-filename = "day5_1.txt"
+filename = "day5_2.txt"
 
 with open(filename) as f:
     content = f.read().splitlines()
@@ -97,21 +95,21 @@ for indx, i in enumerate(content):
             else:
                 break
 
-print(seeds_list)
-print('_________________________________')
-print(seed_soil_map)
-print('_________________________________')
-print(soil_fertilizer_map)
-print('_________________________________')
-print(fertilizer_water_map)
-print('_________________________________')
-print(water_light_map)
-print('_________________________________')
-print(light_temp_map)
-print('_________________________________')
-print(temp_humidity_map)
-print('_________________________________')
-print(humidity_loc_map)
+# print(seeds_list)
+# print('_________________________________')
+# print(seed_soil_map)
+# print('_________________________________')
+# print(soil_fertilizer_map)
+# print('_________________________________')
+# print(fertilizer_water_map)
+# print('_________________________________')
+# print(water_light_map)
+# print('_________________________________')
+# print(light_temp_map)
+# print('_________________________________')
+# print(temp_humidity_map)
+# print('_________________________________')
+# print(humidity_loc_map)
 
 mappers = [
     seed_soil_map,
@@ -131,22 +129,22 @@ location = []
 #  1 - source range
 #  2 - range length
 def map_seed_with_category(sd_num, mapper):
-    # f_mapper = filter(lambda src_range: sd_num < src_range[0] + src_range[1]
-    #                                     and not sd_num < src_range[0],
-    #                   mapper)
-    print('Choosing mapper from: ',mapper," . For seed: ", sd_num)
     choosen_mapper = []
     for m in mapper:
-        if m[2] + m[1] >= sd_num >= m[1]:
+        dest = int(m[0])
+        src = int(m[1])
+        rang = int(m[2])
+        sd = int(sd_num)
+        if src <= sd <= src + rang:
             choosen_mapper = m
-    print('Choosen mspper: ' + ' '.join(choosen_mapper))
-    if len(choosen_mapper) > 0:
-        return sd_num
+            sd_num = dest + sd - src
+            break
     return sd_num
 
 
 for seed in seeds_list:
     for m in mappers:
         seed = map_seed_with_category(seed, m)
+    location.append(seed)
 
-print("Result locations list: ", location)
+print("Result locations list: ", min(location))
