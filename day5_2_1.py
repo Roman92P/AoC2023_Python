@@ -1,10 +1,8 @@
-import numpy as np
 import time
 
 s_time = time.time()
 
-# filename = "day5_2_b.txt"
-filename = "day5_1.txt"
+filename = "day5_2.txt"
 
 with open(filename) as f:
     content = f.read().splitlines()
@@ -25,12 +23,20 @@ temp_humidity_map = []
 
 humidity_loc_map = []
 
+seed_rng_pair = []
+
 for line in content:
     if line.__contains__('seeds:'):
         l_list = line.split(' ')
         l_list = [x for x in l_list if x.isdigit()]
         for h in l_list:
             seeds_list.append(h)
+        for i, s in enumerate(seeds_list):
+
+            if i % 2 == 0:
+                end_indx = i + 1
+                temp = [s, seeds_list[end_indx]]
+                seed_rng_pair.append(temp)
 
 for indx, i in enumerate(content):
     if i.__contains__('seed-to-soil map:'):
@@ -111,88 +117,110 @@ mappers = [
     humidity_loc_map
 ]
 
-# Map every seed to location
 location = []
 
 
-def condition(cert_mapper, n):
-    if int(cert_mapper[1]) <= n <= int(cert_mapper[1]) + int(cert_mapper[2]):
-        return True
+def map_seed(seed_num):
+    sd_num = int(seed_num)
+
+    for mapper_lists in mappers:
+        for mapper_list in mapper_lists:
+            mapper_int_list = [int(x) for x in mapper_list]
+
+            destination = mapper_int_list[0]
+            source = mapper_int_list[1]
+            range = mapper_int_list[2]
+
+            if source <= sd_num <= source + range:
+                sd_num = destination + (sd_num - source)
+                break
+
+    print(sd_num)
+    return sd_num
+
+
+def process(chunk):
+    return [map_seed(x) for x in chunk]
+
+
+s_seed_range_l = seeds_list[::2]
+e_seed_range_l = seeds_list[1::2]
+s_seed_range_l = [int(x) for x in s_seed_range_l]
+e_seed_range_l = [int(x) for x in e_seed_range_l]
+all_seed_range = [min(s_seed_range_l), int(max(s_seed_range_l)) + int(max(e_seed_range_l))]
+
+print(all_seed_range)
+
+cur_map_res = 0
+
+
+def is_on_the_range(number):
+    for n in seed_rng_pair:
+        x = int(n[0])
+        y = int(n[1])
+        if x <= int(number) <= x + y:
+            return True
     return False
 
 
-def filter_mappers(mappers, sd_num):
-    fml = list(mappers)
-    result = []
-    for mapper in fml:
-        filtered_lists = list(filter(lambda x: condition(x, sd_num), mapper))
-        result.append(filtered_lists)
-
-    return result
-
-
-def map_seed_with_category(sd_num):
-    right_mappers = filter_mappers(mappers, sd_num)
-    # print('Mapping: ', sd_num, ' with using next mappers, ', mappers)
-    sum_a = 0
-    for mapper in mappers:
-        for m in mapper:
-            dest = int(m[0])
-            src = int(m[1])
-            rang = int(m[2])
-            sd = int(sd_num)
-            if src <= sd <= src + rang:
-                sd_num = sd - src + dest
-                break
-            sum_a = sum_a + int(sd_num)
-    #     print('Mapper: ', m, 'produces: ', sd_num)
-    # print('Sum: ' + str(sum_a))
-
-    # print('Result of mapping: ', sd_num)
-    return [sd_num, sum_a]
+def get_first_av_number(input_nr):
+    max_rgn_nums = []
+    for n in seed_rng_pair:
+        x = int(n[0])
+        y = int(n[1])
+        max_rgn_nums.append(int(x) + int(y))
+    print(max_rgn_nums)
+    int_list = [int(x) for x in max_rgn_nums]
+    int_list.sort(reverse=True)
+    for u in int_list:
+        if u < input_nr:
+            time.sleep(15)
+            return u
+    return 0
 
 
-def process_seeds():
-    seed_rng_pair = []
+before_pausa = []
+# i = int(all_seed_range[1])
+i = int('1235680074')
+# while i > int(all_seed_range[0]):
+while i > int('1197133308'):
+    print('Checking number: ', i)
+    if is_on_the_range(i):
+        map_result = map_seed(i)
+        if cur_map_res != 0 and cur_map_res < map_result:
+            print('Mapping result: ', cur_map_res)
+            break
+        cur_map_res = map_result
+        i -= 1
+    else:
+        before_pausa.append(i)
+        i = get_first_av_number(i)
+        cur_map_res = 0
+print(before_pausa)
 
-    for i, s in enumerate(seeds_list):
-
-        if i % 2 == 0:
-            end_indx = i + 1
-            temp = [s, seeds_list[end_indx]]
-            seed_rng_pair.append(temp)
-
-    print('Seed:Range pairs are: ', seed_rng_pair)
-
-    results = []
-    sums = []
-    for s_r in seed_rng_pair:
-        print("Processing pair: ", s_r)
-        start = int(s_r[0])
-        end = int(s_r[0]) + int(s_r[1])
-        # s_r_list = np.arange(start, end, 100000)
-        # result_s_r_l = np.vectorize(map_seed_with_category)(s_r_list)
-        s_r_list = list(range(start, end, ))
-
-        result_s_r_l = []
-        for loop_index, srl in enumerate(s_r_list):
-            temp_r = map_seed_with_category(srl)
-            result_s_r_l.append(temp_r[0])
-            # print('Current sums: ', temp_r[1])
-            # print('New sum: ', sums)
-            # if len(sums) > 0 and temp_r[1] < sums[len(sums) - 1]:
-            #     break
-            # else:
-            #     sums.append(temp_r[1])
-            print(loop_index)
-        sums.clear()
-        results.append(np.min(result_s_r_l))
-
-    results.sort()
-    print(results)
-
-
-process_seeds()
 
 e_time = time.time()
-print("Took, ", e_time - s_time, ' min')
+print("Took, ", e_time - s_time, 's')
+
+# Checking number:  4060249500
+# 1426555552
+# Checking number:  4060249499
+# 1426555551
+# Checking number:  4060249498
+# 1426555550
+# Checking number:  4060249497
+# 1426555549
+# Checking number:  4060249496
+# 2873005387
+# Mapping result:  1426555549
+# [4464425380]
+# Took,  487.9617609977722 s
+
+# 4066309214 - start from and this is error
+# 1235680074
+
+# Incorrect resp:
+# 1426555549
+# 3532982064
+
+# last range
