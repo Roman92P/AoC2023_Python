@@ -131,9 +131,19 @@ mappers = [
     humidity_loc_map
 ]
 
+number_to_check = 0
+
+
+def number_is_min(number_to_check):
+
+    pass
+
+
 while True:
-
-
+    if number_is_min(number_to_check):
+        print('Minimum location number is: ', number_to_check)
+        break
+    number_to_check += 1
 
 e_time = time.time()
 print("Took, ", e_time - s_time, 's')
