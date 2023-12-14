@@ -1,4 +1,6 @@
 import time
+from typing import Optional
+
 
 s_time = time.time()
 
@@ -137,19 +139,32 @@ found_number = []
 
 
 def number_is_min(number_to_check):
+    process_num = 0
     for mapper in reversed(mappers):
-        for m in mapper:
+        for m in reversed(mapper):
+            print('Checking: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
             if destination <= number_to_check <= destination + (rang - 1):
-                number_to_check = source + (number_to_check - destination)
-                print(number_to_check)
+                process_num = source + (number_to_check - destination)
+            print('New number is: ', process_num)
+    prev = 'Empty'
+    if len(found_number) > 0:
+        prev = found_number[-1]
+    print('Found min: ', process_num, '. Previously found number is: ', prev)
+    if len(found_number) > 0 and found_number[-1] < process_num:
+        if belong_to_ranges(process_num):
+            return True
+    found_number.append(process_num)
+    print('Finished verification')
+    return False
 
-    print('Found min: ', number_to_check)
-    if len(found_number) > 0 and found_number[-1] < number_to_check:
-        return True
-    found_number.append(number_to_check)
+
+def belong_to_ranges(number_to_check):
+    for r in seed_rng_pair:
+        if r[0] <= number_to_check <= r[0] + r[1]:
+            return True
     return False
 
 
@@ -162,6 +177,3 @@ while True:
 e_time = time.time()
 print("Took, ", e_time - s_time, 's')
 
-# Incorrect resp:
-# 1426555549
-# 3532982064
