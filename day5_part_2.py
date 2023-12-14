@@ -2,7 +2,7 @@ import time
 
 s_time = time.time()
 
-filename = "day5_2.txt"
+filename = "day5_1.txt"
 
 with open(filename) as f:
     content = f.read().splitlines()
@@ -133,10 +133,24 @@ mappers = [
 
 number_to_check = 0
 
+found_number = []
+
 
 def number_is_min(number_to_check):
+    for mapper in reversed(mappers):
+        for m in mapper:
+            destination = m[0]
+            source = m[1]
+            rang = m[2]
+            if destination <= number_to_check <= destination + (rang - 1):
+                number_to_check = source + (number_to_check - destination)
+                print(number_to_check)
 
-    pass
+    print('Found min: ', number_to_check)
+    if len(found_number) > 0 and found_number[-1] < number_to_check:
+        return True
+    found_number.append(number_to_check)
+    return False
 
 
 while True:
@@ -148,25 +162,6 @@ while True:
 e_time = time.time()
 print("Took, ", e_time - s_time, 's')
 
-# Checking number:  4060249500
-# 1426555552
-# Checking number:  4060249499
-# 1426555551
-# Checking number:  4060249498
-# 1426555550
-# Checking number:  4060249497
-# 1426555549
-# Checking number:  4060249496
-# 2873005387
-# Mapping result:  1426555549
-# [4464425380]
-# Took,  487.9617609977722 s
-
-# 4066309214 - start from and this is error
-# 1235680074
-
 # Incorrect resp:
 # 1426555549
 # 3532982064
-
-# last range
