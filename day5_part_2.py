@@ -139,20 +139,21 @@ def number_is_min(number_to_check):
     process_num = number_to_check
     for mapper in reversed(mappers):
         for m in reversed(mapper):
-            print('Checking: ', number_to_check, ' in mapper: ', m)
+            print('Location: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
             if destination <= process_num <= destination + (rang - 1):
-                process_num = source + (process_num - destination)
-            print('New number is: ', process_num)
+                if source + (process_num - destination) <= source + rang:
+                    process_num = source + (process_num - destination)
+            print('Changed number is: ', process_num)
     prev = 'Empty'
     if len(found_number) > 0:
         prev = found_number[-1]
-    print('Found min: ', process_num, '. Previously found number is: ', prev)
-    if len(found_number) > 0 and found_number[-1] < process_num:
+    if len(found_number) > 0 and found_number[-1] > process_num:
         if belong_to_ranges(number_to_check):
-            number_to_check = process_num
+            # number_to_check = process_num
+            print('Found min: ', process_num, '. Previously found number is: ', prev)
             return True
     found_number.append(process_num)
     print('Finished verification')
@@ -168,16 +169,15 @@ def belong_to_ranges(number_to_check):
 
 def get_min_from_seeds():
     seed_starts_l = [item[0] for item in seed_rng_pair]
-    return min(seed_starts_l)
+    return max(seed_starts_l)
 
 
-loc_to_check = 0
-
+location = 0
 while True:
-    if number_is_min(loc_to_check):
-        print('Minimum location number is: ', loc_to_check)
+    if number_is_min(location):
+        print('Minimum location number is: ', location)
         break
-    loc_to_check += 1
+    location += 1
 
 e_time = time.time()
 print("Took, ", e_time - s_time, 's')
