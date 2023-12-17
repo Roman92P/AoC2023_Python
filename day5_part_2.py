@@ -1,7 +1,6 @@
 import time
 from typing import Optional
 
-
 s_time = time.time()
 
 filename = "day5_1.txt"
@@ -133,28 +132,27 @@ mappers = [
     humidity_loc_map
 ]
 
-number_to_check = 0
-
 found_number = []
 
 
 def number_is_min(number_to_check):
-    process_num = 0
+    process_num = number_to_check
     for mapper in reversed(mappers):
         for m in reversed(mapper):
             print('Checking: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
-            if destination <= number_to_check <= destination + (rang - 1):
-                process_num = source + (number_to_check - destination)
+            if destination <= process_num <= destination + (rang - 1):
+                process_num = source + (process_num - destination)
             print('New number is: ', process_num)
     prev = 'Empty'
     if len(found_number) > 0:
         prev = found_number[-1]
     print('Found min: ', process_num, '. Previously found number is: ', prev)
     if len(found_number) > 0 and found_number[-1] < process_num:
-        if belong_to_ranges(process_num):
+        if belong_to_ranges(number_to_check):
+            number_to_check = process_num
             return True
     found_number.append(process_num)
     print('Finished verification')
@@ -168,12 +166,20 @@ def belong_to_ranges(number_to_check):
     return False
 
 
+def get_min_from_seeds():
+    seed_starts_l = [item[0] for item in seed_rng_pair]
+    return min(seed_starts_l)
+
+
+loc_to_check = 0
+
 while True:
-    if number_is_min(number_to_check):
-        print('Minimum location number is: ', number_to_check)
+    if number_is_min(loc_to_check):
+        print('Minimum location number is: ', loc_to_check)
         break
-    number_to_check += 1
+    loc_to_check += 1
 
 e_time = time.time()
 print("Took, ", e_time - s_time, 's')
 
+# 166557950 - 2059461237
