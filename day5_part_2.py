@@ -133,30 +133,33 @@ mappers = [
 ]
 
 found_number = []
+rs_map = {}
 
 
-def number_is_min(number_to_check):
-    process_num = number_to_check
+def number_is_min(location_to_check):
+    print('Checking: ', location_to_check)
+    process_num = location_to_check
     for mapper in reversed(mappers):
         for m in reversed(mapper):
-            print('Location: ', number_to_check, ' in mapper: ', m)
+            # print('Location: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
-            if destination <= process_num <= destination + (rang - 1):
-                if source + (process_num - destination) <= source + rang:
-                    process_num = source + (process_num - destination)
-            print('Changed number is: ', process_num)
+            if destination <= process_num <= destination + rang:
+                process_num = source + (process_num - destination)
+            # print('Changed number is: ', process_num)
+    rs_map[location_to_check] = process_num
     prev = 'Empty'
-    if len(found_number) > 0:
-        prev = found_number[-1]
-    if len(found_number) > 0 and found_number[-1] > process_num:
-        if belong_to_ranges(number_to_check):
-            # number_to_check = process_num
-            print('Found min: ', process_num, '. Previously found number is: ', prev)
-            return True
-    found_number.append(process_num)
-    print('Finished verification')
+    # if len(found_number) > 0:
+    #     prev = found_number[-1]
+    # if len(found_number) > 0 and found_number[-1] < process_num:
+    #     if belong_to_ranges(location_to_check):
+    #         # number_to_check = process_num
+    #         print('Found min: ', process_num, '. Previously found number is: ', prev)
+    #         print('All found numbers: ', found_number)
+    #         return True
+    # found_number.append(process_num)
+    # print('Finished verification')
     return False
 
 
@@ -173,13 +176,14 @@ def get_min_from_seeds():
 
 
 location = 0
-while True:
+while location < 47:
     if number_is_min(location):
         print('Minimum location number is: ', location)
         break
     location += 1
 
 e_time = time.time()
+print(rs_map)
 print("Took, ", e_time - s_time, 's')
 
 # 166557950 - 2059461237
