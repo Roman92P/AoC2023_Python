@@ -140,50 +140,75 @@ def number_is_min(location_to_check):
     print('Checking: ', location_to_check)
     process_num = location_to_check
     for mapper in reversed(mappers):
-        for m in reversed(mapper):
+        for m in (mapper):
             # print('Location: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
             if destination <= process_num <= destination + rang:
+                # print('Changing ', process_num, ' in mapper: ', m)
                 process_num = source + (process_num - destination)
-            # print('Changed number is: ', process_num)
+                break
+        # print('Changed number is: ', process_num)
     rs_map[location_to_check] = process_num
-    prev = 'Empty'
-    # if len(found_number) > 0:
-    #     prev = found_number[-1]
-    # if len(found_number) > 0 and found_number[-1] < process_num:
-    #     if belong_to_ranges(location_to_check):
-    #         # number_to_check = process_num
-    #         print('Found min: ', process_num, '. Previously found number is: ', prev)
-    #         print('All found numbers: ', found_number)
-    #         return True
-    # found_number.append(process_num)
+
+    if belong_to_ranges(process_num):
+        # number_to_check = process_num
+        print('Found min: ', process_num)
+        # print('All found numbers: ', found_number)
+        return True
+    found_number.append(process_num)
     # print('Finished verification')
     return False
 
 
 def belong_to_ranges(number_to_check):
     for r in seed_rng_pair:
-        if r[0] <= number_to_check <= r[0] + r[1]:
+        if r[0] <= number_to_check <= (r[0] + r[1]):
+            # print('Found in range: ', r)
             return True
     return False
 
 
+# 3191849478
+# min is
+# 3960442213
 def get_min_from_seeds():
     seed_starts_l = [item[0] for item in seed_rng_pair]
-    return max(seed_starts_l)
+    return min(seed_starts_l)
 
 
-location = 0
-while location < 47:
-    if number_is_min(location):
-        print('Minimum location number is: ', location)
-        break
-    location += 1
+# print(get_min_from_seeds())
+# print(seed_rng_pair)
+# print(belong_to_ranges(503983169))
+
+# map seed to location
+def map_seed_with_category(sd_num):
+    for mapper in mappers:
+        temp_n = sd_num
+        for m in mapper:
+            print("N before: ", temp_n)
+            des = int(m[0])
+            src = int(m[1])
+            rang = int(m[2])
+            if sd_num == src or src <= sd_num <= src + rang-1:
+                temp_n = des + sd_num - src
+                print(m)
+            print("N after: ", temp_n)
+        sd_num = temp_n
+
+    return sd_num
+
+
+# print(map_seed_with_category(3191849478))
+print(map_seed_with_category(14))
+# location = 0
+# while True:
+#     if number_is_min(location):
+#         print('Minimum location number is: ', location)
+#         break
+#     location += 1
 
 e_time = time.time()
-print(rs_map)
+# print(rs_map)
 print("Took, ", e_time - s_time, 's')
-
-# 166557950 - 2059461237
