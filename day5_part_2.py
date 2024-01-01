@@ -3,7 +3,7 @@ from typing import Optional
 
 s_time = time.time()
 
-filename = "day5_1.txt"
+filename = "day5_2.txt"
 
 with open(filename) as f:
     content = f.read().splitlines()
@@ -140,16 +140,17 @@ def number_is_min(location_to_check):
     print('Checking: ', location_to_check)
     process_num = location_to_check
     for mapper in reversed(mappers):
-        for m in (mapper):
+        tmp_num = process_num
+        for m in reversed(mapper):
             # print('Location: ', number_to_check, ' in mapper: ', m)
             destination = m[0]
             source = m[1]
             rang = m[2]
-            if destination <= process_num <= destination + rang:
+            if destination == process_num or destination < process_num < destination + rang:
                 # print('Changing ', process_num, ' in mapper: ', m)
-                process_num = source + (process_num - destination)
-                break
+                tmp_num = source + (process_num - destination)
         # print('Changed number is: ', process_num)
+        process_num = tmp_num
     rs_map[location_to_check] = process_num
 
     if belong_to_ranges(process_num):
@@ -187,27 +188,26 @@ def map_seed_with_category(sd_num):
     for mapper in mappers:
         temp_n = sd_num
         for m in mapper:
-            print("N before: ", temp_n)
             des = int(m[0])
             src = int(m[1])
             rang = int(m[2])
-            if sd_num == src or src <= sd_num <= src + rang-1:
+            if sd_num == src or src < sd_num < src + rang:
                 temp_n = des + sd_num - src
                 print(m)
-            print("N after: ", temp_n)
         sd_num = temp_n
 
     return sd_num
 
 
 # print(map_seed_with_category(3191849478))
-print(map_seed_with_category(14))
-# location = 0
-# while True:
-#     if number_is_min(location):
-#         print('Minimum location number is: ', location)
-#         break
-#     location += 1
+# print(map_seed_with_category(82))
+# 3969171812 - 79874952
+location = 0
+while True:
+    if number_is_min(location):
+        print('Minimum location number is: ', location)
+        break
+    location += 1
 
 e_time = time.time()
 # print(rs_map)
